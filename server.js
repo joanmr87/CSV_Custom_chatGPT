@@ -17,6 +17,7 @@ app.post("/api/users", (req, res) => {
         age: req.body.age,
     };
     res.json(user);
+    DB.push(user);
 });
 
 app.listen(PORT, () => {
