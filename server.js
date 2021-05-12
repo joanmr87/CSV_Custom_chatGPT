@@ -4,7 +4,11 @@ const app = express();
 
 app.use(express.json());
 
-const DB = [{id: 1, name: 'Dante', age: 3}];
+let id = 2;
+const DB = [
+    {id: 1, name: 'Dante', age: 3},
+    {id: 5, name: 'Astor', age: 10}
+];
 
 app.get("/api/users", (req, res) => {
     res.json(DB);
@@ -12,12 +16,39 @@ app.get("/api/users", (req, res) => {
 
 app.post("/api/users", (req, res) => {
     const user = {
-        id: req.body.id,
+        id: id++,
         name: req.body.name,
         age: req.body.age,
     };
-    res.json(user);
+   
     DB.push(user);
+
+    res.json(user);
+});
+
+app.get("/api/users/:userId", (req, res) => {
+    const userId = parseInt(req.params.userId);
+    const user = DB.filter((item) => item.id === userId)[0];
+
+    if (user) {
+        res.json(user);
+    } else {
+        res.sendStatus(404);
+    }        
+});
+
+app.delete("/api/users/:userId", (req, res) => {
+    const userId = parseInt(req.params.userId);
+    const userIndex = DB.findIndex((item) => item.id === userId);
+
+    if (userIndex > -1) {
+        DB.splice(userIndex, 1);
+        res.json({
+            messege: 'user deleted'
+        });
+    } else {
+        res.sendStatus(404);
+    }
 });
 
 app.listen(PORT, () => {
